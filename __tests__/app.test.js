@@ -53,5 +53,15 @@ describe("APP", () => {
 					});
 				});
 		});
+		describe("ERRORS", () => {
+			test("status 404, error msg article not found", () => {
+				return request(app)
+					.get("/api/articles/not_a_id")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("article not found");
+					});
+			});
+		});
 	});
 });
