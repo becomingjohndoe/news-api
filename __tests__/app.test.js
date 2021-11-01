@@ -23,5 +23,15 @@ describe("APP", () => {
 					});
 				});
 		});
+		describe("ERRORS", () => {
+			test("not a route", () => {
+				return request(app)
+					.get("/api/notaroute")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid URL");
+					});
+			});
+		});
 	});
 });
