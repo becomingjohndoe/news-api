@@ -8,3 +8,8 @@ exports.getTopics = async (req, res) => {
 		console.log(error);
 	}
 };
+
+exports.getArticleById = (req, res) => {
+	try {
+	} catch (error) {}
+};

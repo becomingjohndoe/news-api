@@ -34,4 +34,23 @@ describe("APP", () => {
 			});
 		});
 	});
+	describe("/api/articles/:article_id", () => {
+		test("status 200, return article by article_id", () => {
+			return request(app)
+				.get("/api/articles/1")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.articles).toEqual({
+						article_id: 1,
+						title: "Running a Node App",
+						body:
+							"This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+						votes: 0,
+						topic: "coding",
+						author: "jessjelly",
+						created_at: "2020-11-07",
+					});
+				});
+		});
+	});
 });
