@@ -90,4 +90,4 @@ const seed = async (data) => {
 	await db.query(commentsQuery);
 };
 
-module.exports = seed;
+module.exports = { seed };
