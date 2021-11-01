@@ -7,3 +7,5 @@ exports.selectArticleById = async ({ article_id }) => {
 	);
 	return rows[0];
 };
+
+exports.updateArticleById = async ({ article_id }) => {};
