@@ -9,19 +9,21 @@ afterAll(() => db.end());
 
 describe("APP", () => {
 	describe("/api/topics", () => {
-		test("status: 200, returns all topics", () => {
-			return request(app)
-				.get("/api/topics")
-				.expect(200)
-				.then(({ body }) => {
-					const { topics } = body;
-					topics.forEach((t) => {
-						expect(t).toMatchObject({
-							slug: expect.any(String),
-							description: expect.any(String),
+		describe("GET", () => {
+			test("status: 200, returns all topics", () => {
+				return request(app)
+					.get("/api/topics")
+					.expect(200)
+					.then(({ body }) => {
+						const { topics } = body;
+						topics.forEach((t) => {
+							expect(t).toMatchObject({
+								slug: expect.any(String),
+								description: expect.any(String),
+							});
 						});
 					});
-				});
+			});
 		});
 		describe("ERRORS", () => {
 			test("not a route", () => {
@@ -35,23 +37,48 @@ describe("APP", () => {
 		});
 	});
 	describe("/api/articles/:article_id", () => {
-		test("status 200, return article by article_id", () => {
-			return request(app)
-				.get("/api/articles/1")
-				.expect(200)
-				.then(({ body }) => {
-					expect(body).toEqual({
-						article: {
-							article_id: 1,
-							title: "Living in the shadow of a great man",
-							body: "I find this existence challenging",
-							votes: 100,
-							topic: "mitch",
-							author: "butter_bridge",
-							created_at: "2020-07-08T23:00:00.000Z",
-						},
+		describe("GET", () => {
+			test("status 200, return article by article_id", () => {
+				return request(app)
+					.get("/api/articles/1")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toEqual({
+							article: {
+								article_id: 1,
+								title: "Living in the shadow of a great man",
+								body: "I find this existence challenging",
+								votes: 100,
+								topic: "mitch",
+								author: "butter_bridge",
+								created_at: "2020-07-08T23:00:00.000Z",
+								comment_count: "11",
+							},
+						});
 					});
-				});
+			});
+		});
+		describe("PATCH", () => {
+			test("status 201, updates votes and returns updated article", () => {
+				const increment = { inc_votes: 1 };
+				return request(app)
+					.patch("/api/articles/1")
+					.send(increment)
+					.expect(201)
+					.then(({ body }) => {
+						expect(body).toEqual({
+							article: {
+								article_id: 1,
+								title: "Living in the shadow of a great man",
+								body: "I find this existence challenging",
+								votes: 101,
+								topic: "mitch",
+								author: "butter_bridge",
+								created_at: "2020-07-08T23:00:00.000Z",
+							},
+						});
+					});
+			});
 		});
 		describe("ERRORS", () => {
 			test("status 404, error msg article not found", () => {
@@ -62,6 +89,11 @@ describe("APP", () => {
 						expect(body.msg).toBe("article not found");
 					});
 			});
+		});
+	});
+	describe("/api/articles", () => {
+		describe("GET", () => {
+			test("should ", () => {});
 		});
 	});
 });
