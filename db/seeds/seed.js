@@ -39,6 +39,55 @@ const seed = async (data) => {
     body VARCHAR
   );`);
 	// 2. insert data
+	const topicsQuery = format(
+		`INSERT INTO topics
+      (slug, description)
+    VALUES
+    %L
+    RETURNING*;`,
+		topicData.map((t) => [t.slug, t.description])
+	);
+	await db.query(topicsQuery);
+	const usersQuery = format(
+		`INSERT INTO users
+      (username, name, avatar_url)
+    VALUES
+    %L
+    RETURNING*;`,
+		userData.map((u) => [u.username, u.name, u.avatar_url])
+	);
+	await db.query(usersQuery);
+	const articlesQuery = format(
+		`INSERT INTO articles
+      (title, topic, author, body, created_at, votes)
+    VALUES
+    %L
+    RETURNING*;`,
+		articleData.map((a) => [
+			a.title,
+			a.topic,
+			a.author,
+			a.body,
+			a.created_at,
+			a.votes,
+		])
+	);
+	await db.query(articlesQuery);
+	const commentsQuery = format(
+		`INSERT INTO comments
+      (body, votes, author, article_id, created_at)
+    VALUES
+    %L
+    RETURNING*;`,
+		commentData.map((c) => [
+			c.body,
+			c.votes,
+			c.author,
+			c.article_id,
+			c.created_at,
+		])
+	);
+	await db.query(commentsQuery);
 };
 
 module.exports = seed;
