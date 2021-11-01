@@ -40,15 +40,16 @@ describe("APP", () => {
 				.get("/api/articles/1")
 				.expect(200)
 				.then(({ body }) => {
-					expect(body.articles).toEqual({
-						article_id: 1,
-						title: "Running a Node App",
-						body:
-							"This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
-						votes: 0,
-						topic: "coding",
-						author: "jessjelly",
-						created_at: "2020-11-07",
+					expect(body).toEqual({
+						article: {
+							article_id: 1,
+							title: "Living in the shadow of a great man",
+							body: "I find this existence challenging",
+							votes: 100,
+							topic: "mitch",
+							author: "butter_bridge",
+							created_at: "2020-07-08T23:00:00.000Z",
+						},
 					});
 				});
 		});
