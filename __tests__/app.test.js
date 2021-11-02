@@ -81,7 +81,7 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("status 40o, error msg invalid input type", () => {
+			test("status 40o, error msg invalid input type for artical_id", () => {
 				return request(app)
 					.get("/api/articles/not_a_id")
 					.expect(400)
@@ -89,12 +89,39 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid input type");
 					});
 			});
-			test("status 404, error msg article not found", () => {
+			test("status 404, article_id valid but no article not found", () => {
 				return request(app)
 					.get("/api/articles/999")
 					.expect(404)
 					.then(({ body }) => {
 						expect(body.msg).toBe("article ID 999 not found");
+					});
+			});
+			test("status 400, no inc_votes passed", () => {
+				return request(app)
+					.patch("/api/articles/1")
+					.send({})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Increment can not be null");
+					});
+			});
+			test("status 404, inc_votes is invalid (not a number)", () => {
+				return request(app)
+					.patch("/api/articles/1")
+					.send({ inc_votes: "notavote" })
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
+			test("status 404, inc_votes has more than the required inc_votes property", () => {
+				return request(app)
+					.patch("/api/articles/1")
+					.send({ inc_votes: 12, extraProperty: "test" })
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid vote increment");
 					});
 			});
 		});
@@ -158,31 +185,31 @@ describe("APP", () => {
 						expect(body.articles.every((a) => a.topic === "cats")).toBe(true);
 					});
 			});
-			describe("ERRORS", () => {
-				test("status 400, invalid sort_by query", () => {
-					return request(app)
-						.get("/api/articles?sort_by=not_a_sort_by")
-						.expect(400)
-						.then(({ body }) => {
-							expect(body.msg).toBe("Invalid sort_by query");
-						});
-				});
-				test("status 400, invalid order query", () => {
-					return request(app)
-						.get("/api/articles?order=not_a_order")
-						.expect(400)
-						.then(({ body }) => {
-							expect(body.msg).toBe("Invalid order query");
-						});
-				});
-				test("status 400, invalid topic query", () => {
-					return request(app)
-						.get("/api/articles?topic=not_a_topic")
-						.expect(404)
-						.then(({ body }) => {
-							expect(body.msg).toBe("No articles for topic: not_a_topic found");
-						});
-				});
+		});
+		describe("ERRORS", () => {
+			test("status 400, invalid sort_by query", () => {
+				return request(app)
+					.get("/api/articles?sort_by=not_a_sort_by")
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid sort_by query");
+					});
+			});
+			test("status 400, invalid order query", () => {
+				return request(app)
+					.get("/api/articles?order=not_a_order")
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid order query");
+					});
+			});
+			test("status 400, invalid topic query", () => {
+				return request(app)
+					.get("/api/articles?topic=not_a_topic")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("No articles for topic: not_a_topic found");
+					});
 			});
 		});
 	});
@@ -225,6 +252,9 @@ describe("APP", () => {
 					votes: 0,
 				});
 			});
+		});
+		describe("DELETE", () => {
+			test("", () => {});
 		});
 	});
 });
