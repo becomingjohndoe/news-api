@@ -195,13 +195,11 @@ describe("APP", () => {
 					.then(({ body }) => {
 						body.comments.forEach((c) => {
 							expect(c).toMatchObject({
-								comments: {
-									body: expect.any(String),
-									votes: expect.any(Number),
-									author: expect.any(String),
-									article_id: expect.any(Number),
-									created_at: expect.any(String),
-								},
+								body: expect.any(String),
+								votes: expect.any(Number),
+								author: expect.any(String),
+								article_id: expect.any(Number),
+								created_at: expect.any(String),
 							});
 						});
 					});
