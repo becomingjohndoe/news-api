@@ -8,7 +8,27 @@ exports.selectArticleById = async ({ article_id }) => {
     GROUP BY articles.article_id;`,
 		[article_id]
 	);
+	if (rows) next({ status: 404, msg: "Article not Found" });
 	return rows[0];
 };
 
-exports.updateArticleById = async ({ article_id }) => {};
+exports.updateArticleById = async ({ article_id }, { inc_votes }) => {
+	const { rows } = await db.query(
+		`UPDATE articles
+    SET
+    votes = votes + $1
+    WHERE article_id = $2
+    RETURNING*;`,
+		[inc_votes, article_id]
+	);
+	return rows[0];
+};
+
+exports.selectAllArticles = async (queries) => {
+	const { rows } = await db.query(
+		`SELECT * 
+    FROM articles
+    ;`
+	);
+	return rows;
+};

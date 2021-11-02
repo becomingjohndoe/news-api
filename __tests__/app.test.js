@@ -91,9 +91,16 @@ describe("APP", () => {
 			});
 		});
 	});
-	describe("/api/articles", () => {
+	describe("/api/articles/", () => {
 		describe("GET", () => {
-			test("should ", () => {});
+			test("should ", () => {
+				return request(app)
+					.get("/api/articles/")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toBe(1);
+					});
+			});
 		});
 	});
 });
