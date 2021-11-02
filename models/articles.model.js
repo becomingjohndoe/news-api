@@ -8,7 +8,6 @@ exports.selectArticleById = async ({ article_id }) => {
     GROUP BY articles.article_id;`,
 		[article_id]
 	);
-	if (rows) next({ status: 404, msg: "Article not Found" });
 	return rows[0];
 };
 

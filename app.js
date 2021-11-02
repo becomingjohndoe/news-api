@@ -1,5 +1,8 @@
 const express = require("express");
-const { handleCustoms } = require("./controllers/errors.controller");
+const {
+	handleCustoms,
+	handlePSQLS,
+} = require("./controllers/errors.controller");
 const apiRouter = require("./routes/api.router");
 
 const app = express();
@@ -9,4 +12,5 @@ app.all("/*", (req, res) => {
 	res.status(404).send({ msg: "Invalid URL" });
 });
 app.use(handleCustoms);
+app.use(handlePSQLS);
 module.exports = app;
