@@ -39,6 +39,9 @@ exports.selectAllArticles = async (
 	) {
 		return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
 	}
+	if (!["ASC", "DESC", "asc", "desc"].includes(order)) {
+		return Promise.reject({ status: 400, msg: "Invalid order query" });
+	}
 	const queries = [];
 	let queryStr = `
     SELECT *
