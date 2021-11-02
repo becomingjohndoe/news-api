@@ -3,7 +3,9 @@ const {
 	patchArticleById,
 	getAllArticles,
 } = require("../controllers/articles.controller");
-const commentRouter = require("./comments.router");
+const {
+	getCommentsByArticleId,
+} = require("../controllers/comments.controller");
 
 const articleRouter = require("express").Router();
 
@@ -14,6 +16,6 @@ articleRouter
 	.get(getArticlesById)
 	.patch(patchArticleById);
 
-articleRouter.use("/:article_id/comments", commentRouter);
+articleRouter.route("/:article_id/comments").get(getCommentsByArticleId);
 
 module.exports = articleRouter;
