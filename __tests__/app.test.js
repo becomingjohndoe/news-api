@@ -155,7 +155,6 @@ describe("APP", () => {
 					.get("/api/articles?topic=cats")
 					.expect(200)
 					.then(({ body }) => {
-						console.log(body.articles);
 						expect(body.articles.every((a) => a.topic === "cats")).toBe(true);
 					});
 			});
@@ -189,9 +188,9 @@ describe("APP", () => {
 	});
 	describe("/api/articles/:article_id/comments", () => {
 		describe("GET", () => {
-			test("status 200, responds with all comment for inputted article_id", () => {
+			test("status 200, responds with all comments for inputted article_id", () => {
 				return request(app)
-					.get("/api/articles/:article_id/comments")
+					.get("/api/articles/1/comments")
 					.expect(200)
 					.then(({ body }) => {
 						body.comments.forEach((c) => {
