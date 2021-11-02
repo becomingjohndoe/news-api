@@ -17,7 +17,17 @@ exports.selectArticleById = async ({ article_id }) => {
 	return rows[0];
 };
 
-exports.updateArticleById = async ({ article_id }, { inc_votes }) => {
+exports.updateVotesByArticleId = async ({ article_id }, votes) => {
+	if (Object.values(votes).length > 1) {
+		return Promise.reject({
+			status: 400,
+			msg: "Invalid vote increment",
+		});
+	}
+	const { inc_votes } = votes;
+	if (!inc_votes) {
+		return Promise.reject({ status: 400, msg: "Increment can not be null" });
+	}
 	const { rows } = await db.query(
 		`UPDATE articles
     SET
@@ -26,6 +36,8 @@ exports.updateArticleById = async ({ article_id }, { inc_votes }) => {
     RETURNING*;`,
 		[inc_votes, article_id]
 	);
+
+	console.log(rows);
 	return rows[0];
 };
 
