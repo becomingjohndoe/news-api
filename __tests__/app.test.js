@@ -198,8 +198,10 @@ describe("APP", () => {
 								body: expect.any(String),
 								votes: expect.any(Number),
 								author: expect.any(String),
-								article_id: expect.any(Number),
 								created_at: expect.any(String),
+							});
+							expect(c).not.toMatchObject({
+								article_id: expect.any(Number),
 							});
 						});
 					});
