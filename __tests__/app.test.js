@@ -207,5 +207,24 @@ describe("APP", () => {
 					});
 			});
 		});
+		describe("POST", () => {
+			test("status 201, inserts comment into comments table", () => {
+				const comment = { username: "butter_bridge", body: "test test" };
+				return request(app)
+					.post("/api/articles/1/comments")
+					.send(comment)
+					.expect(201)
+					.then(({ body }) => {
+						expect(body.comment).toMatchObject({
+							article_id: 1,
+							author: "butter_bridge",
+							body: "test test",
+							comment_id: 19,
+							created_at: expect.any(String),
+							votes: 0,
+						});
+					});
+			});
+		});
 	});
 });
