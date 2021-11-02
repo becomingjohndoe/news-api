@@ -52,5 +52,11 @@ exports.selectAllArticles = async (
 	}
 	queryStr += ` ORDER BY ${sort_by} ${order};`;
 	const { rows } = await db.query(queryStr, queries);
+	if (rows.length === 0) {
+		return Promise.reject({
+			status: 404,
+			msg: `No articles for topic: ${topic} found`,
+		});
+	}
 	return rows;
 };
