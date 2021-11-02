@@ -81,12 +81,20 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("status 404, error msg article not found", () => {
+			test("status 404, error msg invalid input type", () => {
 				return request(app)
 					.get("/api/articles/not_a_id")
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
+			test("status 404, error msg article not found", () => {
+				return request(app)
+					.get("/api/articles/999")
 					.expect(404)
 					.then(({ body }) => {
-						expect(body.msg).toBe("article not found");
+						expect(body.msg).toBe("article ID 999 not found");
 					});
 			});
 		});

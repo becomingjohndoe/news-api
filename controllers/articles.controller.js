@@ -9,6 +9,7 @@ exports.getArticlesById = async (req, res, next) => {
 		const article = await selectArticleById(req.params);
 		res.status(200).send({ article });
 	} catch (err) {
+		console.log(err);
 		next(err);
 	}
 };

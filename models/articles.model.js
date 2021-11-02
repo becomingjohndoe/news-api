@@ -8,6 +8,12 @@ exports.selectArticleById = async ({ article_id }) => {
     GROUP BY articles.article_id;`,
 		[article_id]
 	);
+	if (rows.length === 0) {
+		return Promise.reject({
+			status: 404,
+			msg: `article ID ${article_id} not found`,
+		});
+	}
 	return rows[0];
 };
 
