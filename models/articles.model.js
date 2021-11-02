@@ -34,15 +34,16 @@ exports.selectAllArticles = async (
 	order = "DESC",
 	topic
 ) => {
-	if (!["title", "topic", "author", "body", "created_at", "votes"]) {
-		return Promise.reject();
+	if (
+		!["title", "topic", "author", "body", "created_at", "votes"].includes(sort_by)
+	) {
+		return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
 	}
 	const queries = [];
 	let queryStr = `
     SELECT *
     FROM articles`;
 	if (topic) {
-		console.log(topic);
 		queries.push(topic);
 		queryStr += ` WHERE topic = $1`;
 	}

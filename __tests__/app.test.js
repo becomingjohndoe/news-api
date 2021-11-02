@@ -159,6 +159,16 @@ describe("APP", () => {
 						expect(body.articles.every((a) => a.topic === "cats")).toBe(true);
 					});
 			});
+			describe("ERRORS", () => {
+				test("status 400, invalid sort_by query", () => {
+					return request(app)
+						.get("/api/articles?sort_by=not_a_sort_by")
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toBe("Invalid sort_by query");
+						});
+				});
+			});
 		});
 	});
 });
