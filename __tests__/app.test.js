@@ -187,4 +187,26 @@ describe("APP", () => {
 			});
 		});
 	});
+	describe("/api/articles/:article_id/comments", () => {
+		describe("GET", () => {
+			test("status 200, responds with all comment for inputted article_id", () => {
+				return request(app)
+					.get("/api/articles/:article_id/comments")
+					.expect(200)
+					.then(({ body }) => {
+						body.comments.forEach((c) => {
+							expect(c).toMatchObject({
+								comments: {
+									body: expect.any(String),
+									votes: expect.any(Number),
+									author: expect.any(String),
+									article_id: expect.any(Number),
+									created_at: expect.any(String),
+								},
+							});
+						});
+					});
+			});
+		});
+	});
 });
