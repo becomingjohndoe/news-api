@@ -254,7 +254,12 @@ describe("APP", () => {
 			});
 		});
 		describe("DELETE", () => {
-			test("", () => {});
+			test.only("status 204, deletes comment by given comment_id", async () => {
+				await request(app).delete("/api/comments/18").expect(204);
+				const { rows } = await db.query(`SELECT * FROM  comments;`);
+				console.log(rows);
+				expect(rows).toHaveLength(17);
+			});
 		});
 	});
 });
