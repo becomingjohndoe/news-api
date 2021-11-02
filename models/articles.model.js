@@ -34,6 +34,9 @@ exports.selectAllArticles = async (
 	order = "DESC",
 	topic
 ) => {
+	if (!["title", "topic", "author", "body", "created_at", "votes"]) {
+		return Promise.reject();
+	}
 	const queries = [];
 	let queryStr = `
     SELECT *
