@@ -30,5 +30,10 @@
 		"jest-sorted": "^1.0.12",
 		"superagent": "^6.1.0",
 		"supertest": "^6.1.6"
+	},
+	"jest": {
+		"setupFilesAfterEnv": [
+			"jest-sorted"
+		]
 	}
 }

@@ -9,7 +9,6 @@ exports.getArticlesById = async (req, res, next) => {
 		const article = await selectArticleById(req.params);
 		res.status(200).send({ article });
 	} catch (err) {
-		console.log(err);
 		next(err);
 	}
 };
@@ -24,8 +23,9 @@ exports.patchArticleById = async (req, res, next) => {
 };
 
 exports.getAllArticles = async (req, res, next) => {
+	const { sort_by, order, topic } = req.query;
 	try {
-		const articles = await selectAllArticles();
+		const articles = await selectAllArticles(sort_by, order, topic);
 		res.status(200).send({ articles });
 	} catch (err) {
 		next(err);

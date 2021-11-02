@@ -1,7 +1,5 @@
 exports.handleCustoms = (err, req, res, next) => {
-	console.log(err.status);
 	if (err.status) {
-		console.log("inside err.status");
 		res.status(err.status).send({ msg: err.msg });
 	} else next(err);
 };

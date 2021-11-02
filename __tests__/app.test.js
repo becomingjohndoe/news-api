@@ -81,7 +81,7 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("status 404, error msg invalid input type", () => {
+			test("status 40o, error msg invalid input type", () => {
 				return request(app)
 					.get("/api/articles/not_a_id")
 					.expect(400)
@@ -101,7 +101,7 @@ describe("APP", () => {
 	});
 	describe("/api/articles/", () => {
 		describe("GET", () => {
-			test("should ", () => {
+			test("status 200, returns all articles", () => {
 				return request(app)
 					.get("/api/articles/")
 					.expect(200)
@@ -116,6 +116,47 @@ describe("APP", () => {
 								votes: expect.any(Number),
 							});
 						});
+					});
+			});
+			test("status 200, returns all articles sorted by default created_at", () => {
+				return request(app)
+					.get("/api/articles/")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.articles).toBeSortedBy("created_at", { descending: true });
+					});
+			});
+			test("status 200, returns all articles sorted by user input votes", () => {
+				return request(app)
+					.get("/api/articles?sort_by=votes")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.articles).toBeSortedBy("votes", { descending: true });
+					});
+			});
+			test("status 200, returns all articles sorted by default in descending order", () => {
+				return request(app)
+					.get("/api/articles?sort_by=votes")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.articles).toBeSorted({ descending: true });
+					});
+			});
+			test("status 200, returns all articles sorted by user input order", () => {
+				return request(app)
+					.get("/api/articles?order=ASC")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.articles).toBeSortedBy("created_at", { descending: false });
+					});
+			});
+			test("status 200, returns all articles filtered by user input topic", () => {
+				return request(app)
+					.get("/api/articles?topic=cats")
+					.expect(200)
+					.then(({ body }) => {
+						console.log(body.articles);
+						expect(body.articles.every((a) => a.topic === "cats")).toBe(true);
 					});
 			});
 		});

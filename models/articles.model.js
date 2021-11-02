@@ -29,11 +29,21 @@ exports.updateArticleById = async ({ article_id }, { inc_votes }) => {
 	return rows[0];
 };
 
-exports.selectAllArticles = async (queries) => {
-	const { rows } = await db.query(
-		`SELECT * 
-    FROM articles
-    ;`
-	);
+exports.selectAllArticles = async (
+	sort_by = "created_at",
+	order = "DESC",
+	topic
+) => {
+	const queries = [];
+	let queryStr = `
+    SELECT *
+    FROM articles`;
+	if (topic) {
+		console.log(topic);
+		queries.push(topic);
+		queryStr += ` WHERE topic = $1`;
+	}
+	queryStr += ` ORDER BY ${sort_by} ${order};`;
+	const { rows } = await db.query(queryStr, queries);
 	return rows;
 };
