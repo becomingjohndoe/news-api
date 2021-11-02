@@ -168,6 +168,14 @@ describe("APP", () => {
 							expect(body.msg).toBe("Invalid sort_by query");
 						});
 				});
+				test("status 400, invalid order query", () => {
+					return request(app)
+						.get("/api/articles?order=not_a_order")
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toBe("Invalid order query");
+						});
+				});
 			});
 		});
 	});
