@@ -176,6 +176,14 @@ describe("APP", () => {
 							expect(body.msg).toBe("Invalid order query");
 						});
 				});
+				test("status 400, invalid topic query", () => {
+					return request(app)
+						.get("/api/articles?topic=not_a_topic")
+						.expect(404)
+						.then(({ body }) => {
+							expect(body.msg).toBe("No articles for topic: not_a_topic found");
+						});
+				});
 			});
 		});
 	});
