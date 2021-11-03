@@ -254,7 +254,22 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("error", () => {});
+			test("status 400, invalid input type for article_id (not a number", () => {
+				return request(app)
+					.get("/api/articles/notaid/comments")
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
+			test("status 404, valid input type for article_id where no articles found", () => {
+				return request(app)
+					.get("/api/articles/999/comments")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("no comments found for article ID 999");
+					});
+			});
 		});
 	});
 	describe("/api/comments/:comment_id", () => {

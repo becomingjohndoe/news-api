@@ -7,6 +7,12 @@ exports.selectCommentsByArticleId = async ({ article_id }) => {
     WHERE article_id = $1;`,
 		[article_id]
 	);
+	if (rows.length === 0) {
+		return Promise.reject({
+			status: 404,
+			msg: `no comments found for article ID ${article_id}`,
+		});
+	}
 	return rows;
 };
 
@@ -19,7 +25,6 @@ exports.insertComment = async ({ article_id }, { username, body }) => {
     RETURNING*;`,
 		[body, username, article_id]
 	);
-	console.log(rows);
 	return rows[0];
 };
 
