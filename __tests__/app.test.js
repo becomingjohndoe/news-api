@@ -279,7 +279,7 @@ describe("APP", () => {
 						expect(body.msg).toBe("Empty post request");
 					});
 			});
-			test.only("POST status 400, valid input type for article_id where post body property username is not found in DB", () => {
+			test("POST status 400, valid input type for article_id where post body property username is not found in DB", () => {
 				return request(app)
 					.post("/api/articles/1/comments")
 					.send({ username: "notauser", body: "test test" })
@@ -295,7 +295,6 @@ describe("APP", () => {
 			test("status 204, deletes comment by given comment_id", async () => {
 				await request(app).delete("/api/comments/18").expect(204);
 				const { rows } = await db.query(`SELECT * FROM  comments;`);
-				console.log(rows);
 				expect(rows).toHaveLength(17);
 			});
 		});
