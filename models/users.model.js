@@ -5,9 +5,10 @@ exports.selectAllUsers = async () => {
 	return rows;
 };
 
-exports.selectUserById = async ({ user_id }) => {
-	const { rows } = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [
-		user_id,
-	]);
+exports.selectUserByName = async ({ username }) => {
+	const { rows } = await db.query(
+		`SELECT * FROM users WHERE username LIKE $1;`,
+		[`%${username}%`]
+	);
 	return rows[0];
 };
