@@ -10,7 +10,7 @@ afterAll(() => db.end());
 
 describe("APP", () => {
 	describe("/api", () => {
-		test.only("responds with all endpoints", () => {
+		test("responds with all endpoints", () => {
 			return request(app)
 				.get("/api")
 				.expect(200)
@@ -324,6 +324,22 @@ describe("APP", () => {
 					.expect(400)
 					.then(({ body }) => {
 						expect(body.msg).toBe("Invalid input type");
+					});
+			});
+		});
+	});
+	describe("/api/users", () => {
+		describe("GET", () => {
+			test("status 200, returns all usernames in DB", () => {
+				return request(app)
+					.get("/api/users")
+					.expect(200)
+					.then(({ body }) => {
+						body.users.forEach((user) => {
+							expect(user).toMatchObject({
+								username: expect.any(String),
+							});
+						});
 					});
 			});
 		});
