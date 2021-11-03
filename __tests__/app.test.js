@@ -253,13 +253,21 @@ describe("APP", () => {
 				});
 			});
 		});
+		describe("ERRORS", () => {
+			test("error", () => {});
+		});
+	});
+	describe("/api/comments/:comment_id", () => {
 		describe("DELETE", () => {
-			test.only("status 204, deletes comment by given comment_id", async () => {
+			test("status 204, deletes comment by given comment_id", async () => {
 				await request(app).delete("/api/comments/18").expect(204);
 				const { rows } = await db.query(`SELECT * FROM  comments;`);
 				console.log(rows);
 				expect(rows).toHaveLength(17);
 			});
+		});
+		describe("ERRORS", () => {
+			test("errr", () => {});
 		});
 	});
 });
