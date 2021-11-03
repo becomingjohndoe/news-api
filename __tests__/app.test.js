@@ -254,7 +254,7 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("status 400, invalid input type for article_id (not a number", () => {
+			test("GET status 400, invalid input type for article_id (not a number", () => {
 				return request(app)
 					.get("/api/articles/notaid/comments")
 					.expect(400)
@@ -262,12 +262,30 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid input type");
 					});
 			});
-			test("status 404, valid input type for article_id where no articles found", () => {
+			test("GET status 404, valid input type for article_id where no articles found", () => {
 				return request(app)
 					.get("/api/articles/999/comments")
 					.expect(404)
 					.then(({ body }) => {
 						expect(body.msg).toBe("no comments found for article ID 999");
+					});
+			});
+			test("POST status 400, valid input type for article_id where post body is empty", () => {
+				return request(app)
+					.post("/api/articles/1/comments")
+					.send({})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Empty post request");
+					});
+			});
+			test.only("POST status 400, valid input type for article_id where post body property username is not found in DB", () => {
+				return request(app)
+					.post("/api/articles/1/comments")
+					.send({ username: "notauser", body: "test test" })
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("User notauser does not exist");
 					});
 			});
 		});
@@ -290,7 +308,7 @@ describe("APP", () => {
 						expect(body.msg).toBe("no comment found for comment ID 999");
 					});
 			});
-			test.only("status 400, invalid comment_id (not a number)", () => {
+			test("status 400, invalid comment_id (not a number)", () => {
 				return request(app)
 					.delete("/api/comments/notaid")
 					.expect(400)
