@@ -344,4 +344,23 @@ describe("APP", () => {
 			});
 		});
 	});
+	describe("/api/users/user_id", () => {
+		describe("GET", () => {
+			test.only("status 200, returns user by ID", () => {
+				return request(app)
+					.get("/api/users/butter_bridge")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toEqual({
+							user: {
+								avatar_url:
+									"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+								name: "jonny",
+								username: "butter_bridge",
+							},
+						});
+					});
+			});
+		});
+	});
 });
