@@ -36,8 +36,6 @@ exports.updateVotesByArticleId = async ({ article_id }, votes) => {
     RETURNING*;`,
 		[inc_votes, article_id]
 	);
-
-	console.log(rows);
 	return rows[0];
 };
 
