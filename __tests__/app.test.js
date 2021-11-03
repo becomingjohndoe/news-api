@@ -3,11 +3,22 @@ const app = require("../app.js");
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const { seed } = require("../db/seeds/seed.js");
+const { endpoints } = require("../endpoints.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("APP", () => {
+	describe("/api", () => {
+		test.only("responds with all endpoints", () => {
+			return request(app)
+				.get("/api")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body).toEqual(endpoints);
+				});
+		});
+	});
 	describe("/api/topics", () => {
 		describe("GET", () => {
 			test("status: 200, returns all topics", () => {
