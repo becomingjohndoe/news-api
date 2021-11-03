@@ -282,7 +282,22 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("errr", () => {});
+			test("status 404, valid comment_id where no comments found", () => {
+				return request(app)
+					.delete("/api/comments/999")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("no comment found for comment ID 999");
+					});
+			});
+			test.only("status 400, invalid comment_id (not a number)", () => {
+				return request(app)
+					.delete("/api/comments/notaid")
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
 		});
 	});
 });
