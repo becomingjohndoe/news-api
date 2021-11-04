@@ -157,6 +157,14 @@ describe("APP", () => {
 						});
 					});
 			});
+			test("status 200, returns a empty array when topic exists with no articles associated for topic", () => {
+				return request(app)
+					.get("/api/articles?topic=paper")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toEqual({ articles: [] });
+					});
+			});
 			test("status 200, returns all articles sorted by default created_at", () => {
 				return request(app)
 					.get("/api/articles/")
@@ -198,6 +206,7 @@ describe("APP", () => {
 					});
 			});
 		});
+
 		describe("ERRORS", () => {
 			test("status 400, invalid sort_by query", () => {
 				return request(app)
@@ -220,7 +229,7 @@ describe("APP", () => {
 					.get("/api/articles?topic=not_a_topic")
 					.expect(404)
 					.then(({ body }) => {
-						expect(body.msg).toBe("No articles for topic: not_a_topic found");
+						expect(body.msg).toBe("topic: not_a_topic does not exist");
 					});
 			});
 		});
@@ -368,16 +377,3 @@ describe("APP", () => {
 		});
 	});
 });
-
-// SELECT articles.*, COUNT(comments.comment_id) AS comment_count
-// FROM articles
-// LEFT JOIN comments ON comments.article_id = articles.article_id
-// WHERE articles.topic = "cats"
-// ORDER BY created_at DESC
-// GROUP BY articles.article_id;
-
-// SELECT articles.*, COUNT(comments.comment_id) AS comment_count FROM articles
-//     LEFT JOIN comments ON comments.article_id = articles.article_id
-//     WHERE articles.topic = 'mitch'
-//     GROUP BY articles.article_id
-//   ORDER BY created_at DESC;

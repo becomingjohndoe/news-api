@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { selectTopics, selectTopicBySlug } = require("./topics.models");
 
 exports.selectArticleById = async ({ article_id }) => {
 	const { rows } = await db.query(
@@ -44,6 +45,14 @@ exports.selectAllArticles = async (
 	order = "DESC",
 	topic
 ) => {
+	if (topic) {
+		if ((await selectTopicBySlug(topic)) === undefined) {
+			return Promise.reject({
+				status: 404,
+				msg: `topic: ${topic} does not exist`,
+			});
+		}
+	}
 	if (
 		!["title", "topic", "author", "body", "created_at", "votes"].includes(sort_by)
 	) {
@@ -52,26 +61,23 @@ exports.selectAllArticles = async (
 	if (!["ASC", "DESC", "asc", "desc"].includes(order)) {
 		return Promise.reject({ status: 400, msg: "Invalid order query" });
 	}
+
 	const queries = [];
+
 	let queryStr = `
     SELECT articles.*, COUNT(comments.comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     `;
+
 	if (topic) {
 		queries.push(topic);
 		queryStr += ` WHERE articles.topic = $1`;
 	}
+
 	queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
-	//GROUP BY articles.article_id;
-	console.log(queryStr);
+
 	const { rows } = await db.query(queryStr, queries);
-	if (rows.length === 0) {
-		return Promise.reject({
-			status: 404,
-			msg: `No articles for topic: ${topic} found`,
-		});
-	}
 
 	return rows;
 };
