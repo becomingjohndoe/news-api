@@ -16,7 +16,7 @@ exports.getArticleById = async (req, res, next) => {
 exports.patchVotesByArticleId = async (req, res, next) => {
 	try {
 		const article = await updateVotesByArticleId(req.params, req.body);
-		res.status(201).send({ article });
+		res.status(200).send({ article });
 	} catch (err) {
 		next(err);
 	}

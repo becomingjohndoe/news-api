@@ -69,13 +69,13 @@ describe("APP", () => {
 					});
 			});
 		});
-		describe("PATCH", () => {
-			test("status 201, updates votes and returns updated article", () => {
+		describe.only("PATCH", () => {
+			test("status 200, updates votes and returns updated article", () => {
 				const increment = { inc_votes: 1 };
 				return request(app)
 					.patch("/api/articles/1")
 					.send(increment)
-					.expect(201)
+					.expect(200)
 					.then(({ body }) => {
 						expect(body).toEqual({
 							article: {
@@ -83,6 +83,25 @@ describe("APP", () => {
 								title: "Living in the shadow of a great man",
 								body: "I find this existence challenging",
 								votes: 101,
+								topic: "mitch",
+								author: "butter_bridge",
+								created_at: "2020-07-08T23:00:00.000Z",
+							},
+						});
+					});
+			});
+			test("status 400, ignores patch request and sends unchanged article to client when no inc_votes passed", () => {
+				return request(app)
+					.patch("/api/articles/1")
+					.send({})
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toEqual({
+							article: {
+								article_id: 1,
+								title: "Living in the shadow of a great man",
+								body: "I find this existence challenging",
+								votes: 100,
 								topic: "mitch",
 								author: "butter_bridge",
 								created_at: "2020-07-08T23:00:00.000Z",
@@ -108,15 +127,7 @@ describe("APP", () => {
 						expect(body.msg).toBe("article ID 999 not found");
 					});
 			});
-			test("status 400, no inc_votes passed", () => {
-				return request(app)
-					.patch("/api/articles/1")
-					.send({})
-					.expect(400)
-					.then(({ body }) => {
-						expect(body.msg).toBe("Increment can not be null");
-					});
-			});
+
 			test("status 404, inc_votes is invalid (not a number)", () => {
 				return request(app)
 					.patch("/api/articles/1")
