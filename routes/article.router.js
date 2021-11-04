@@ -1,5 +1,5 @@
 const {
-	getArticlesById,
+	getArticleById,
 	patchVotesByArticleId,
 	getAllArticles,
 } = require("../controllers/articles.controller");
@@ -14,7 +14,7 @@ articleRouter.route("/").get(getAllArticles);
 
 articleRouter
 	.route("/:article_id")
-	.get(getArticlesById)
+	.get(getArticleById)
 	.patch(patchVotesByArticleId);
 
 articleRouter
