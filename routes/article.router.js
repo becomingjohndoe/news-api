@@ -1,6 +1,6 @@
 const {
 	getArticlesById,
-	IncrementVotesByArticleId,
+	patchVotesByArticleId,
 	getAllArticles,
 } = require("../controllers/articles.controller");
 const {
@@ -15,7 +15,7 @@ articleRouter.route("/").get(getAllArticles);
 articleRouter
 	.route("/:article_id")
 	.get(getArticlesById)
-	.patch(IncrementVotesByArticleId);
+	.patch(patchVotesByArticleId);
 
 articleRouter
 	.route("/:article_id/comments")

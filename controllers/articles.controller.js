@@ -13,7 +13,7 @@ exports.getArticlesById = async (req, res, next) => {
 	}
 };
 
-exports.IncrementVotesByArticleId = async (req, res, next) => {
+exports.patchVotesByArticleId = async (req, res, next) => {
 	try {
 		const article = await updateVotesByArticleId(req.params, req.body);
 		res.status(201).send({ article });
