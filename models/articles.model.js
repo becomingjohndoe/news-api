@@ -54,13 +54,17 @@ exports.selectAllArticles = async (
 	}
 	const queries = [];
 	let queryStr = `
-    SELECT *
-    FROM articles`;
+    SELECT articles.*, COUNT(comments.comment_id) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    `;
 	if (topic) {
 		queries.push(topic);
-		queryStr += ` WHERE topic = $1`;
+		queryStr += ` WHERE articles.topic = $1`;
 	}
-	queryStr += ` ORDER BY ${sort_by} ${order};`;
+	queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+	//GROUP BY articles.article_id;
+	console.log(queryStr);
 	const { rows } = await db.query(queryStr, queries);
 	if (rows.length === 0) {
 		return Promise.reject({
@@ -68,5 +72,6 @@ exports.selectAllArticles = async (
 			msg: `No articles for topic: ${topic} found`,
 		});
 	}
+
 	return rows;
 };

@@ -139,7 +139,7 @@ describe("APP", () => {
 	});
 	describe("/api/articles/", () => {
 		describe("GET", () => {
-			test("status 200, returns all articles", () => {
+			test.only("status 200, returns all articles", () => {
 				return request(app)
 					.get("/api/articles/")
 					.expect(200)
@@ -152,6 +152,7 @@ describe("APP", () => {
 								body: expect.any(String),
 								created_at: expect.any(String),
 								votes: expect.any(Number),
+								comment_count: expect.any(String),
 							});
 						});
 					});
@@ -188,7 +189,7 @@ describe("APP", () => {
 						expect(body.articles).toBeSortedBy("created_at", { descending: false });
 					});
 			});
-			test("status 200, returns all articles filtered by user input topic", () => {
+			test.only("status 200, returns all articles filtered by user input topic", () => {
 				return request(app)
 					.get("/api/articles?topic=cats")
 					.expect(200)
@@ -367,3 +368,16 @@ describe("APP", () => {
 		});
 	});
 });
+
+// SELECT articles.*, COUNT(comments.comment_id) AS comment_count
+// FROM articles
+// LEFT JOIN comments ON comments.article_id = articles.article_id
+// WHERE articles.topic = "cats"
+// ORDER BY created_at DESC
+// GROUP BY articles.article_id;
+
+// SELECT articles.*, COUNT(comments.comment_id) AS comment_count FROM articles
+//     LEFT JOIN comments ON comments.article_id = articles.article_id
+//     WHERE articles.topic = 'mitch'
+//     GROUP BY articles.article_id
+//   ORDER BY created_at DESC;
