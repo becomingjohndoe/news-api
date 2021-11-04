@@ -6,9 +6,8 @@ exports.selectAllUsers = async () => {
 };
 
 exports.selectUserByName = async ({ username }) => {
-	const { rows } = await db.query(
-		`SELECT * FROM users WHERE username LIKE $1;`,
-		[`%${username}%`]
-	);
+	const { rows } = await db.query(`SELECT * FROM users WHERE username = $1;`, [
+		username,
+	]);
 	return rows[0];
 };

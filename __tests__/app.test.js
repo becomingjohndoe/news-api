@@ -139,7 +139,7 @@ describe("APP", () => {
 	});
 	describe("/api/articles/", () => {
 		describe("GET", () => {
-			test.only("status 200, returns all articles", () => {
+			test("status 200, returns all articles", () => {
 				return request(app)
 					.get("/api/articles/")
 					.expect(200)
@@ -189,7 +189,7 @@ describe("APP", () => {
 						expect(body.articles).toBeSortedBy("created_at", { descending: false });
 					});
 			});
-			test.only("status 200, returns all articles filtered by user input topic", () => {
+			test("status 200, returns all articles filtered by user input topic", () => {
 				return request(app)
 					.get("/api/articles?topic=cats")
 					.expect(200)
