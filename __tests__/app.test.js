@@ -344,9 +344,9 @@ describe("APP", () => {
 			});
 		});
 	});
-	describe("/api/users/user_id", () => {
+	describe("/api/users/username", () => {
 		describe("GET", () => {
-			test.only("status 200, returns user by ID", () => {
+			test("status 200, returns user by ID", () => {
 				return request(app)
 					.get("/api/users/butter_bridge")
 					.expect(200)
@@ -361,6 +361,9 @@ describe("APP", () => {
 						});
 					});
 			});
+		});
+		describe("ERRORS", () => {
+			test("GET status 400, username not of valid type (not a string)", () => {});
 		});
 	});
 });
