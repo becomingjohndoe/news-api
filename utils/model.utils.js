@@ -24,12 +24,7 @@ exports.checkupdateVotesByArticleIdParams = async (article_id, votes) => {
 
 exports.checkSelectAllArticlesQueries = async (sort_by, order, topic) => {
 	if (topic) {
-		if ((await selectTopicBySlug(topic)) === undefined) {
-			return Promise.reject({
-				status: 404,
-				msg: `topic: ${topic} does not exist`,
-			});
-		}
+		await selectTopicBySlug(topic);
 	}
 	if (
 		!["title", "topic", "author", "body", "created_at", "votes"].includes(sort_by)
