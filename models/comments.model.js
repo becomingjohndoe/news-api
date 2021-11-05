@@ -59,3 +59,20 @@ exports.deleteCommentByCommentId = async ({ comment_id }) => {
 		});
 	}
 };
+
+exports.updateCommentVotes = async ({ comment_id }, { inc_votes }) => {
+	if (!inc_votes) {
+		return Promise.reject({ status: 400, msg: "Empty post request" });
+	}
+	const { rows } = await db.query(
+		`UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING*;`,
+		[inc_votes, comment_id]
+	);
+	if (rows.length === 0) {
+		return Promise.reject({
+			status: 404,
+			msg: `no comment found for comment ID ${comment_id}`,
+		});
+	}
+	return rows[0];
+};
