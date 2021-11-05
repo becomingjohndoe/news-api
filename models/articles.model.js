@@ -1,5 +1,9 @@
 const db = require("../db/connection");
-const { selectTopicBySlug } = require("./topics.models");
+const {
+	checkupdateVotesByArticleIdParams,
+	checkSelectAllArticlesQueries,
+	buildSelectAllArticlesQuery,
+} = require("../utils/model.utils");
 
 exports.selectArticleById = async ({ article_id }) => {
 	const { rows } = await db.query(
@@ -16,20 +20,8 @@ exports.selectArticleById = async ({ article_id }) => {
 };
 
 exports.updateVotesByArticleId = async ({ article_id }, votes) => {
-	if (Object.values(votes).length > 1) {
-		return Promise.reject({
-			status: 400,
-			msg: "Invalid vote increment",
-		});
-	}
-	const queries = [];
-	const { inc_votes } = votes;
-	if (!inc_votes) {
-		queries.push(0);
-	} else {
-		queries.push(inc_votes);
-	}
-	queries.push(article_id);
+	const queries = await checkupdateVotesByArticleIdParams(article_id, votes);
+
 	const { rows } = await db.query(
 		`UPDATE articles
     SET
@@ -38,6 +30,11 @@ exports.updateVotesByArticleId = async ({ article_id }, votes) => {
     RETURNING*;`,
 		queries
 	);
+
+	if (rows.length === 0) {
+		return Promise.reject({ status: 404, msg: "article_id does not exist" });
+	}
+
 	return rows[0];
 };
 
@@ -46,37 +43,13 @@ exports.selectAllArticles = async (
 	order = "DESC",
 	topic
 ) => {
-	if (topic) {
-		if ((await selectTopicBySlug(topic)) === undefined) {
-			return Promise.reject({
-				status: 404,
-				msg: `topic: ${topic} does not exist`,
-			});
-		}
-	}
-	if (
-		!["title", "topic", "author", "body", "created_at", "votes"].includes(sort_by)
-	) {
-		return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
-	}
-	if (!["ASC", "DESC", "asc", "desc"].includes(order)) {
-		return Promise.reject({ status: 400, msg: "Invalid order query" });
-	}
+	await checkSelectAllArticlesQueries(sort_by, order, topic);
 
-	const queries = [];
-
-	let queryStr = `
-    SELECT articles.*, COUNT(comments.comment_id) AS comment_count
-    FROM articles
-    LEFT JOIN comments ON comments.article_id = articles.article_id
-    `;
-
-	if (topic) {
-		queries.push(topic);
-		queryStr += ` WHERE articles.topic = $1`;
-	}
-
-	queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+	const { queryStr, queries } = await buildSelectAllArticlesQuery(
+		sort_by,
+		order,
+		topic
+	);
 
 	const { rows } = await db.query(queryStr, queries);
 
