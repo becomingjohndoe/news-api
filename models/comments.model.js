@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-const { isUser } = require("../utils/isUser");
 const { selectArticleById } = require("./articles.model");
 
 exports.selectCommentsByArticleId = async ({ article_id }) => {
@@ -16,16 +15,27 @@ exports.selectCommentsByArticleId = async ({ article_id }) => {
 	return rows;
 };
 
+exports.selectCommentsById = async (id) => {
+	const { rows } = await db.query(
+		`SELECT comment_id, body, votes, author, created_at
+    FROM comments
+    WHERE comment_id = $1;`,
+		[id]
+	);
+
+	if (rows.length === 0) {
+		return Promise.reject({
+			status: 404,
+			msg: `no comment found for comment ID ${id}`,
+		});
+	}
+};
+
 exports.insertComment = async ({ article_id }, { username, body }) => {
 	if (!(username && body)) {
 		return Promise.reject({ status: 400, msg: "Empty post request" });
 	}
-	if (!(await isUser(username))) {
-		return Promise.reject({
-			status: 404,
-			msg: `User ${username} does not exist`,
-		});
-	}
+
 	const { rows } = await db.query(
 		`INSERT INTO comments
     (body, author, article_id)
