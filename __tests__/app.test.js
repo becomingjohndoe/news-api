@@ -90,7 +90,7 @@ describe("APP", () => {
 						});
 					});
 			});
-			test("status 400, ignores patch request and sends unchanged article to client when no inc_votes passed", () => {
+			test("status 200, ignores patch request and sends unchanged article to client when no inc_votes passed", () => {
 				return request(app)
 					.patch("/api/articles/1")
 					.send({})
@@ -128,7 +128,7 @@ describe("APP", () => {
 					});
 			});
 
-			test("PATCH status 404, inc_votes is invalid (not a number)", () => {
+			test("PATCH status 400, inc_votes is invalid (not a number)", () => {
 				return request(app)
 					.patch("/api/articles/1")
 					.send({ inc_votes: "notavote" })
@@ -137,13 +137,31 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid input type");
 					});
 			});
-			test("PATCH status 404, inc_votes has more than the required inc_votes property", () => {
+			test("PATCH status 400, inc_votes has more than the required inc_votes property", () => {
 				return request(app)
 					.patch("/api/articles/1")
 					.send({ inc_votes: 12, extraProperty: "test" })
 					.expect(400)
 					.then(({ body }) => {
 						expect(body.msg).toBe("Invalid vote increment");
+					});
+			});
+			test("PATCH status 400, invalid article_id (not a number)", () => {
+				return request(app)
+					.patch("/api/articles/notaid")
+					.send({ inc_votes: 12 })
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
+			test("PATCH status 404, invalid article_id (does not exist)", () => {
+				return request(app)
+					.patch("/api/articles/999")
+					.send({ inc_votes: 12 })
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("article_id does not exist");
 					});
 			});
 		});
@@ -235,7 +253,7 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid order query");
 					});
 			});
-			test("status 400, invalid topic query", () => {
+			test("status 404, invalid topic query", () => {
 				return request(app)
 					.get("/api/articles?topic=not_a_topic")
 					.expect(404)
@@ -292,6 +310,26 @@ describe("APP", () => {
 					votes: 0,
 				});
 			});
+			test("POST status 201, ignores unnecessary properties on patch body", () => {
+				return request(app)
+					.post("/api/articles/1/comments")
+					.send({
+						username: "butter_bridge",
+						body: "test test",
+						unneccesary: "test",
+					})
+					.expect(201)
+					.then(({ body }) => {
+						expect(body.comment).toMatchObject({
+							article_id: 1,
+							author: "butter_bridge",
+							body: "test test",
+							comment_id: 19,
+							created_at: expect.any(String),
+							votes: 0,
+						});
+					});
+			});
 		});
 		describe("ERRORS", () => {
 			test("GET status 400, invalid input type for article_id (not a number", () => {
@@ -310,6 +348,15 @@ describe("APP", () => {
 						expect(body.msg).toBe("article_id does not exist");
 					});
 			});
+			test("POST status 400, invalid article_id (not a number)", () => {
+				return request(app)
+					.post("/api/articles/notaid/comments")
+					.send({ username: "butter_bridge", body: "test test" })
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Invalid input type");
+					});
+			});
 			test("POST status 400, valid input type for article_id where post body is empty", () => {
 				return request(app)
 					.post("/api/articles/1/comments")
@@ -325,7 +372,16 @@ describe("APP", () => {
 					.send({ username: "notauser", body: "test test" })
 					.expect(404)
 					.then(({ body }) => {
-						expect(body.msg).toBe("User notauser does not exist");
+						expect(body.msg).toBe("Resource not found");
+					});
+			});
+			test("POST status 404, valid input type for article_id where article_id does not exist", () => {
+				return request(app)
+					.post("/api/articles/999/comments")
+					.send({ username: "butter_bridge", body: "test test" })
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("Resource not found");
 					});
 			});
 		});
