@@ -22,7 +22,13 @@ exports.checkupdateVotesByArticleIdParams = async (article_id, votes) => {
 	return queries;
 };
 
-exports.checkSelectAllArticlesQueries = async (sort_by, order, topic) => {
+exports.checkSelectAllArticlesQueries = async (
+	sort_by,
+	order,
+	topic,
+	limit,
+	p
+) => {
 	if (topic) {
 		await selectTopicBySlug(topic);
 	}
@@ -36,9 +42,16 @@ exports.checkSelectAllArticlesQueries = async (sort_by, order, topic) => {
 	}
 };
 
-exports.buildSelectAllArticlesQuery = async (sort_by, order, topic) => {
+exports.buildSelectAllArticlesQuery = async (
+	sort_by,
+	order,
+	topic,
+	limit,
+	p
+) => {
 	const queries = [];
-
+	const offset = (p - 1) * limit;
+	queries.push(limit, offset);
 	let queryStr = `
     SELECT articles.*, COUNT(comments.comment_id) AS comment_count
     FROM articles
@@ -47,9 +60,18 @@ exports.buildSelectAllArticlesQuery = async (sort_by, order, topic) => {
 
 	if (topic) {
 		queries.push(topic);
-		queryStr += ` WHERE articles.topic = $1`;
+		queryStr += ` WHERE articles.topic = $1 GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $2 OFFSET $3;`;
+	} else {
+		queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2;`;
 	}
-
-	queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+	console.log(queryStr);
 	return { queryStr: queryStr, queries: queries };
 };
+
+// SELECT articles.*, COUNT(comments.comment_id) AS comment_count
+// FROM articles
+// LEFT JOIN comments ON comments.article_id = articles.article_id
+// WHERE articles.topic = 'mitch'
+// GROUP BY articles.article_id
+// ORDER BY created_at DESC
+// LIMIT 5 OFFSET 0;

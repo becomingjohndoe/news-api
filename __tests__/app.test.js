@@ -235,6 +235,17 @@ describe("APP", () => {
 					});
 			});
 		});
+		describe.only("Pagination", () => {
+			test("should ", () => {
+				return request(app)
+					.get("/api/articles?limit=5&p=2")
+					.expect(200)
+					.then(({ body }) => {
+						// check pagination
+						expect(body.articles).toHaveLength(5);
+					});
+			});
+		});
 
 		describe("ERRORS", () => {
 			test("status 400, invalid sort_by query", () => {
@@ -448,7 +459,73 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("GET status 400, username not of valid type (not a string)", () => {});
+			test("GET status 404, username valid type but does not exist in DB", () => {
+				return request(app)
+					.get("/api/users/notausername")
+					.expect(404)
+					.then(({ body }) => {
+						expect(body.msg).toBe("User not found");
+					});
+			});
+		});
+	});
+	describe("/api/comments/:comment_id", () => {
+		describe("PATCH", () => {
+			test("status 200, updated comment object", () => {
+				return request(app)
+					.patch("/api/comments/1")
+					.send({ inc_votes: 1 })
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.comment).toEqual({
+							comment_id: 1,
+							body:
+								"Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+							votes: 17,
+							author: "butter_bridge",
+							article_id: 9,
+							created_at: expect.any(String),
+						});
+					});
+			});
+			describe("errors", () => {
+				test("status 400, invalid article_id", () => {
+					return request(app)
+						.patch("/api/comments/noaid")
+						.send({ inc_votes: 1 })
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toEqual("Invalid input type");
+						});
+				});
+				test("status 404, non existent article_id", () => {
+					return request(app)
+						.patch("/api/comments/999")
+						.send({ inc_votes: 1 })
+						.expect(404)
+						.then(({ body }) => {
+							expect(body.msg).toEqual("no comment found for comment ID 999");
+						});
+				});
+				test("status 40, inc_votes not a number", () => {
+					return request(app)
+						.patch("/api/comments/1")
+						.send({ inc_votes: "notanumber" })
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toEqual("Invalid input type");
+						});
+				});
+				test("status 40, inc_votes is missing", () => {
+					return request(app)
+						.patch("/api/comments/1")
+						.send({})
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toEqual("Empty post request");
+						});
+				});
+			});
 		});
 	});
 });

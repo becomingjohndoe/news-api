@@ -41,14 +41,18 @@ exports.updateVotesByArticleId = async ({ article_id }, votes) => {
 exports.selectAllArticles = async (
 	sort_by = "created_at",
 	order = "DESC",
-	topic
+	topic,
+	limit = 10,
+	p = 1
 ) => {
 	await checkSelectAllArticlesQueries(sort_by, order, topic);
 
 	const { queryStr, queries } = await buildSelectAllArticlesQuery(
 		sort_by,
 		order,
-		topic
+		topic,
+		limit,
+		p
 	);
 
 	const { rows } = await db.query(queryStr, queries);
