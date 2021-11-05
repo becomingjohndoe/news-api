@@ -69,7 +69,7 @@ describe("APP", () => {
 					});
 			});
 		});
-		describe.only("PATCH", () => {
+		describe("PATCH", () => {
 			test("status 200, updates votes and returns updated article", () => {
 				const increment = { inc_votes: 1 };
 				return request(app)
@@ -111,7 +111,7 @@ describe("APP", () => {
 			});
 		});
 		describe("ERRORS", () => {
-			test("status 40o, error msg invalid input type for artical_id", () => {
+			test("GET status 400, error msg invalid input type for artical_id", () => {
 				return request(app)
 					.get("/api/articles/not_a_id")
 					.expect(400)
@@ -119,16 +119,16 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid input type");
 					});
 			});
-			test("status 404, article_id valid but no article not found", () => {
+			test("GET status 404, article_id valid but no article not found", () => {
 				return request(app)
 					.get("/api/articles/999")
 					.expect(404)
 					.then(({ body }) => {
-						expect(body.msg).toBe("article ID 999 not found");
+						expect(body.msg).toBe("article_id does not exist");
 					});
 			});
 
-			test("status 404, inc_votes is invalid (not a number)", () => {
+			test("PATCH status 404, inc_votes is invalid (not a number)", () => {
 				return request(app)
 					.patch("/api/articles/1")
 					.send({ inc_votes: "notavote" })
@@ -137,7 +137,7 @@ describe("APP", () => {
 						expect(body.msg).toBe("Invalid input type");
 					});
 			});
-			test("status 404, inc_votes has more than the required inc_votes property", () => {
+			test("PATCH status 404, inc_votes has more than the required inc_votes property", () => {
 				return request(app)
 					.patch("/api/articles/1")
 					.send({ inc_votes: 12, extraProperty: "test" })
@@ -265,6 +265,14 @@ describe("APP", () => {
 						});
 					});
 			});
+			test("status 200, responds with empty array when no comments found for article", () => {
+				return request(app)
+					.get("/api/articles/2/comments")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body).toEqual({ comments: [] });
+					});
+			});
 		});
 		describe("POST", () => {
 			test("status 201, inserts comment into comments table", async () => {
@@ -299,7 +307,7 @@ describe("APP", () => {
 					.get("/api/articles/999/comments")
 					.expect(404)
 					.then(({ body }) => {
-						expect(body.msg).toBe("no comments found for article ID 999");
+						expect(body.msg).toBe("article_id does not exist");
 					});
 			});
 			test("POST status 400, valid input type for article_id where post body is empty", () => {
