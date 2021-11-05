@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { selectTopics, selectTopicBySlug } = require("./topics.models");
+const { selectTopicBySlug } = require("./topics.models");
 
 exports.selectArticleById = async ({ article_id }) => {
 	const { rows } = await db.query(
@@ -10,10 +10,7 @@ exports.selectArticleById = async ({ article_id }) => {
 		[article_id]
 	);
 	if (rows.length === 0) {
-		return Promise.reject({
-			status: 404,
-			msg: `article ID ${article_id} not found`,
-		});
+		return Promise.reject({ status: 404, msg: "article_id does not exist" });
 	}
 	return rows[0];
 };
