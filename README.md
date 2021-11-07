@@ -160,7 +160,7 @@ body
 ### Delete comment
 
 ```http
-/api/comments/:comment_id
+DELETE /api/comments/:comment_id
 ```
 
 | Paramters    | Type     | Description             |
@@ -170,7 +170,7 @@ body
 ### Patch votes on comment
 
 ```http
-/api/comments/:comment_id
+PATCH /api/comments/:comment_id
 ```
 
 | Paramters    | Type     | Description            |
