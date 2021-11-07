@@ -22,13 +22,7 @@ exports.checkupdateVotesByArticleIdParams = async (article_id, votes) => {
 	return queries;
 };
 
-exports.checkSelectAllArticlesQueries = async (
-	sort_by,
-	order,
-	topic,
-	limit,
-	p
-) => {
+exports.checkSelectAllArticlesQueries = async (sort_by, order, topic) => {
 	if (topic) {
 		await selectTopicBySlug(topic);
 	}
@@ -60,18 +54,19 @@ exports.buildSelectAllArticlesQuery = async (
 
 	if (topic) {
 		queries.push(topic);
-		queryStr += ` WHERE articles.topic = $1 GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $2 OFFSET $3;`;
-	} else {
-		queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2;`;
+		queryStr += ` WHERE articles.topic = $3`;
 	}
+	queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2;`;
+
 	console.log(queryStr);
-	return { queryStr: queryStr, queries: queries };
+	console.log(queries);
+	return { queryStr, queries };
 };
 
-// SELECT articles.*, COUNT(comments.comment_id) AS comment_count
+//  SELECT articles.*, COUNT(comments.comment_id) AS comment_count
 // FROM articles
 // LEFT JOIN comments ON comments.article_id = articles.article_id
-// WHERE articles.topic = 'mitch'
+// WHERE articles.topic = 'paper'
 // GROUP BY articles.article_id
-// ORDER BY created_at DESC
-// LIMIT 5 OFFSET 0;
+// ORDER BY created_at
+// DESC LIMIT 5 OFFSET 0;

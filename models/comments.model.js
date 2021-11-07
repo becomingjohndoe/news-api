@@ -1,13 +1,21 @@
 const db = require("../db/connection");
 const { selectArticleById } = require("./articles.model");
 
-exports.selectCommentsByArticleId = async ({ article_id }) => {
-	const { rows } = await db.query(
-		`SELECT comment_id, body, votes, author, created_at
+exports.selectCommentsByArticleId = async ({ article_id }, { limit, p }) => {
+	const queries = [article_id];
+	let queryStr = `SELECT  body, votes, author, created_at
     FROM comments
-    WHERE article_id = $1;`,
-		[article_id]
-	);
+    WHERE article_id = $1`;
+
+	if (limit) {
+		const offset = p * limit;
+		queries.push(limit, offset);
+		queryStr += ` ORDER BY created_at DESC
+    LIMIT $2 OFFSET $3`;
+	}
+
+	const { rows } = await db.query(queryStr, queries);
+
 	// check if article_id exists in articles table
 	// will return Promise reject if no articles found
 	await selectArticleById({ article_id });

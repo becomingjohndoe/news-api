@@ -235,8 +235,8 @@ describe("APP", () => {
 					});
 			});
 		});
-		describe.only("Pagination", () => {
-			test("should ", () => {
+		describe("Pagination", () => {
+			test("status 200, limit = 5 p = 2 ", () => {
 				return request(app)
 					.get("/api/articles?limit=5&p=2")
 					.expect(200)
@@ -340,6 +340,35 @@ describe("APP", () => {
 							votes: 0,
 						});
 					});
+			});
+		});
+		describe("Pagination", () => {
+			test("status 200, limit = 5 p = 1", () => {
+				//check pagination
+				return request(app)
+					.get("/api/articles/1/comments?limit=5&p=1")
+					.expect(200)
+					.then(({ body }) => {
+						expect(body.comments).toHaveLength(5);
+					});
+			});
+			describe("errors", () => {
+				test("pagination with invalid id", () => {
+					return request(app)
+						.get("/api/articles/not_a_number/comments?limit=5&p=1")
+						.expect(400)
+						.then(({ body }) => {
+							expect(body.msg).toBe("Invalid input type");
+						});
+				});
+				test("pagination with invalid id", () => {
+					return request(app)
+						.get("/api/articles/9999/comments?limit=5&p=1")
+						.expect(404)
+						.then(({ body }) => {
+							expect(body.msg).toBe("article_id does not exist");
+						});
+				});
 			});
 		});
 		describe("ERRORS", () => {
