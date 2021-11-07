@@ -13,65 +13,76 @@ Clone the project
   git clone https://link-to-project
 ```
 
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`API_KEY`
+
+`ANOTHER_API_KEY`
+
 ### Environment Variables
 
-Create two .env files: `.env.test` and `.env.development`
+Create two .env files: `.env.development` and `.env.test`
 
-Add the following environment
-variables to your `.env.test` and `.env.development` files
+To run this project, you will need to add the following environment variables to your .env files
 
-`PGADATABASE`
+_/.env.development_
 
-Set the values to: `nc_news` and `nc_news_test`
+`PGADATABASE=nc_news`
+
+_/.env.test_
+
+`PGADATABASE=nc_news_test`
 
 ### Run Locally
 
-1. Go to the project directory
+Go to the project directory
 
-   ```bash
-   cd nc-news
-   ```
+```bash
+cd nc-news
+```
 
-2. Install dependencies
+Install dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-   This will install the following packages:
+This will install the following packages:
 
-       dotenv
-       express
-       pg
-       pg-format
+- dotenv
+- express
+- pg
+- pg-format
+  and the developer dependencies for testing.
 
-   and developer dependencies for testing.
+- jest
+- jest-sorted
+- superagent
+- supertest
 
-       jest
-       jest-sorted
-       superagent
-       supertest
+Setup the database
 
-3. Setup the database
+```bash
+npm run setup-dbs
+```
 
-   ```bash
-   npm run setup-dbs
-   ```
+Seed the database
 
-4. Seed the database
-   ```bash
-   npm run seed
-   ```
+```bash
+npm run seed
+```
 
 _if the seed was unsccesful an error will be logged in the terminal._
 
-5. Start the server
+Start the server
 
-   ```bash
-   npm run start
-   ```
+```bash
+npm run start
+```
 
-   The server will now be accessible from _http://localhost/9090_
+The server will now be accessible from _http://localhost/9090_
 
 ## Demo
 
@@ -160,7 +171,7 @@ body
 ### Delete comment
 
 ```http
-DELETE /api/comments/:comment_id
+/api/comments/:comment_id
 ```
 
 | Paramters    | Type     | Description             |
@@ -170,7 +181,7 @@ DELETE /api/comments/:comment_id
 ### Patch votes on comment
 
 ```http
-PATCH /api/comments/:comment_id
+/api/comments/:comment_id
 ```
 
 | Paramters    | Type     | Description            |
