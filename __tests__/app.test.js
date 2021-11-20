@@ -36,6 +36,24 @@ describe("APP", () => {
 					});
 			});
 		});
+		describe("POST", () => {
+			// status 201, returns new topic
+			test("status: 201, returns new topic", () => {
+				return request(app)
+					.post("/api/topics")
+					.send({
+						slug: "other",
+						description: "Cats are awesome",
+					})
+					.expect(201)
+					.then(({ body }) => {
+						expect(body.topic).toMatchObject({
+							slug: "other",
+							description: "Cats are awesome",
+						});
+					});
+			});
+		});
 		describe("ERRORS", () => {
 			test("not a route", () => {
 				return request(app)
@@ -246,7 +264,7 @@ describe("APP", () => {
 					});
 			});
 		});
-		describe.only("POST", () => {
+		describe("POST", () => {
 			it("status 201, returns posted article", () => {
 				return request(app)
 					.post("/api/articles")
