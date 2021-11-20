@@ -23,8 +23,8 @@ const seed = async (data) => {
   );`);
 	await db.query(`CREATE TABLE articles (
     article_id SERIAL PRIMARY KEY,
-    title VARCHAR,
-    body VARCHAR,
+    title VARCHAR NOT NULL,
+    body VARCHAR NOT NULL,
     votes INT DEFAULT 0,
     topic VARCHAR REFERENCES topics(slug),
     author VARCHAR REFERENCES users(username),

@@ -59,3 +59,17 @@ exports.selectAllArticles = async (
 
 	return rows;
 };
+
+exports.insertArticle = async ({ author, title, body, topic }) => {
+	const { rows } = await db.query(
+		`INSERT INTO articles (author, title, body, topic)
+    VALUES
+    ($1, $2, $3, $4)
+    RETURNING*;`,
+		[author, title, body, topic]
+	);
+	if (rows.length === 0) {
+		return Promise.reject({ status: 404, msg: "article_id does not exist" });
+	}
+	return rows[0];
+};

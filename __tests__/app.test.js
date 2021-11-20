@@ -246,7 +246,51 @@ describe("APP", () => {
 					});
 			});
 		});
-
+		describe.only("POST", () => {
+			it("status 201, returns posted article", () => {
+				return request(app)
+					.post("/api/articles")
+					.send({
+						author: "butter_bridge",
+						title: "Living in the shadow of a great",
+						body: "But as he spoke, he drew the attention of the crowd",
+						topic: "mitch",
+					})
+					.then(({ body }) => {
+						expect(body.article).toEqual({
+							article_id: 13,
+							author: "butter_bridge",
+							body: "But as he spoke, he drew the attention of the crowd",
+							created_at: "2021-11-20T00:00:00.000Z",
+							title: "Living in the shadow of a great",
+							topic: "mitch",
+							votes: 0,
+						});
+					});
+			});
+			it("status 400, returns error message when missing required fields", () => {
+				return request(app)
+					.post("/api/articles")
+					.send({})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("missing required fields");
+					});
+			});
+			it("status 404, returns error message when username does not exist", () => {
+				return request(app)
+					.post("/api/articles")
+					.send({
+						author: "not-a-user",
+						title: "Living in the shadow of a great",
+						body: "But as he spoke, he drew the attention of the crowd",
+						topic: "mitch",
+					})
+					.then(({ body }) => {
+						expect(body.msg).toBe("Resource not found");
+					});
+			});
+		});
 		describe("ERRORS", () => {
 			test("status 400, invalid sort_by query", () => {
 				return request(app)
