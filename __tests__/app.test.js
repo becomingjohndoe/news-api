@@ -19,7 +19,7 @@ describe("APP", () => {
 				});
 		});
 	});
-	describe("/api/topics", () => {
+	describe.only("/api/topics", () => {
 		describe("GET", () => {
 			test("status: 200, returns all topics", () => {
 				return request(app)
@@ -51,6 +51,43 @@ describe("APP", () => {
 							slug: "other",
 							description: "Cats are awesome",
 						});
+					});
+			});
+			//status 400, missing slug
+			test("status: 400, missing slug", () => {
+				return request(app)
+					.post("/api/topics")
+					.send({
+						description: "Cats are awesome",
+					})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("missing required fields");
+					});
+			});
+			//status 400, missing description
+			test("status: 400, missing description", () => {
+				return request(app)
+					.post("/api/topics")
+					.send({
+						slug: "cats",
+					})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("missing required fields");
+					});
+			});
+			//status 400, invalid slug
+			test("status: 400, invalid slug", () => {
+				return request(app)
+					.post("/api/topics")
+					.send({
+						slug: 999,
+						description: "Cats are awesome",
+					})
+					.expect(400)
+					.then(({ body }) => {
+						expect(body.msg).toBe("invalid slug");
 					});
 			});
 		});
