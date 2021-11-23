@@ -35,9 +35,8 @@ const seed = async (data) => {
     author VARCHAR REFERENCES users(username),
     article_id INT REFERENCES articles(article_id),
     votes INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW(),
-    body VARCHAR
-  );`);
+    body VARCHAR,
+    created_at TIMESTAMP DEFAULT NOW());`);
 	// 2. insert data
 	const topicsQuery = format(
 		`INSERT INTO topics
