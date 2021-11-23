@@ -28,14 +28,14 @@ const seed = async (data) => {
     votes INT DEFAULT 0,
     topic VARCHAR REFERENCES topics(slug),
     author VARCHAR REFERENCES users(username),
-    created_at DATE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT NOW()
   );`);
 	await db.query(`CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
     author VARCHAR REFERENCES users(username),
     article_id INT REFERENCES articles(article_id),
     votes INT NOT NULL DEFAULT 0,
-    created_at DATE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     body VARCHAR
   );`);
 	// 2. insert data
