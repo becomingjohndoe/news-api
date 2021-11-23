@@ -3,7 +3,7 @@ const { selectArticleById } = require("./articles.model");
 
 exports.selectCommentsByArticleId = async ({ article_id }, { limit, p }) => {
 	const queries = [article_id];
-	let queryStr = `SELECT  body, votes, author, created_at
+	let queryStr = `SELECT comment_id, body, votes, author, created_at
     FROM comments
     WHERE article_id = $1`;
 

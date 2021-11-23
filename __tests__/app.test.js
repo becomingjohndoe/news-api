@@ -19,7 +19,7 @@ describe("APP", () => {
 				});
 		});
 	});
-	describe.only("/api/topics", () => {
+	describe("/api/topics", () => {
 		describe("GET", () => {
 			test("status: 200, returns all topics", () => {
 				return request(app)
@@ -374,7 +374,7 @@ describe("APP", () => {
 		});
 	});
 	describe("/api/articles/:article_id/comments", () => {
-		describe("GET", () => {
+		describe.only("GET", () => {
 			test("status 200, responds with all comments for inputted article_id", () => {
 				return request(app)
 					.get("/api/articles/1/comments")
@@ -382,6 +382,7 @@ describe("APP", () => {
 					.then(({ body }) => {
 						body.comments.forEach((c) => {
 							expect(c).toMatchObject({
+								comment_id: expect.any(Number),
 								body: expect.any(String),
 								votes: expect.any(Number),
 								author: expect.any(String),
