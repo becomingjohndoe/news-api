@@ -27,7 +27,15 @@ exports.checkSelectAllArticlesQueries = async (sort_by, order, topic) => {
 		await selectTopicBySlug(topic);
 	}
 	if (
-		!["title", "topic", "author", "body", "created_at", "votes"].includes(sort_by)
+		![
+			"title",
+			"topic",
+			"author",
+			"body",
+			"created_at",
+			"votes",
+			"comment_count",
+		].includes(sort_by)
 	) {
 		return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
 	}
