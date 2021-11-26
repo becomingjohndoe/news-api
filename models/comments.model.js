@@ -7,11 +7,11 @@ exports.selectCommentsByArticleId = async ({ article_id }, { limit, p }) => {
     FROM comments
     WHERE article_id = $1`;
 
+	queryStr += ` ORDER BY created_at DESC`;
 	if (limit) {
 		const offset = p * limit;
 		queries.push(limit, offset);
-		queryStr += ` ORDER BY created_at DESC
-    LIMIT $2 OFFSET $3`;
+		querStr += `LIMIT $2 OFFSET $3`;
 	}
 
 	const { rows } = await db.query(queryStr, queries);
