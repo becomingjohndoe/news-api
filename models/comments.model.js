@@ -11,7 +11,7 @@ exports.selectCommentsByArticleId = async ({ article_id }, { limit, p }) => {
 	if (limit) {
 		const offset = p * limit;
 		queries.push(limit, offset);
-		querStr += `LIMIT $2 OFFSET $3`;
+		queryStr += `LIMIT $2 OFFSET $3`;
 	}
 
 	const { rows } = await db.query(queryStr, queries);
